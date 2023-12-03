@@ -81,7 +81,35 @@ def _tensor_conv1d(
     s2 = weight_strides
 
     # TODO: Implement for Task 4.1.
-    raise NotImplementedError("Need to implement for Task 4.1")
+    for i in prange(out_size):
+        in_length = len(input_shape)
+        w_length = len(weight_shape)
+        in_index = np.empty(in_length, np.int32)
+        w_idx = np.empty(w_length, np.int32)
+        out_index = np.empty(out_size, np.int32)
+        
+        to_index(i, out_shape, out_index)
+        in_index[0] = out_index[0]
+        w_idx[0] = out_index[1]
+        count = 0.0
+
+        for j in prange(in_channels):
+            in_index[1] = j
+            w_idx[1] = j
+            for k in prange(kw):
+                w_idx[2] = k
+
+                if reverse:
+                    in_index[2] = out_index[2] + k - kw + 1
+                else:
+                    in_index[2] = out_index[2] + k
+
+                if in_index[2] >= 0 and in_index[2] < input_shape[2]:
+                    k_pos = index_to_position(w_idx, s2)
+                    i_pos = index_to_position(in_index, s1)
+                    count += input[i_pos] * weight[k_pos]
+
+        out[i] = count
 
 
 tensor_conv1d = njit(parallel=True)(_tensor_conv1d)
@@ -207,7 +235,44 @@ def _tensor_conv2d(
     s20, s21, s22, s23 = s2[0], s2[1], s2[2], s2[3]
 
     # TODO: Implement for Task 4.2.
-    raise NotImplementedError("Need to implement for Task 4.2")
+    for i in prange(out_size):
+
+        in_length = len(input_shape)
+        w_length = len(weight_shape)
+        in_idx = np.empty(in_length, np.int32)
+        w_idx = np.empty(w_length, np.int32)
+        o_idx = np.empty(out_size, np.int32)
+
+        to_index(i, out_shape, o_idx)
+        in_idx[0] = o_idx[0]
+        w_idx[0] = o_idx[1]
+        res = 0.0
+
+        for j in prange(in_channels):
+            in_idx[1] = j
+            w_idx[1] = j
+
+            for k in prange(kw):
+                for p in prange(kh):
+                    w_idx[2] = p
+                    w_idx[3] = k
+
+                    if reverse:
+                        in_idx[2] = o_idx[2] + p - kh + 1
+                        in_idx[3] = o_idx[3] + k - kw + 1
+                    else:
+                        in_idx[2] = o_idx[2] + p
+                        in_idx[3] = o_idx[3] + k
+                                            
+                    if (
+                        in_idx[2] >= 0 and in_idx[2] < input_shape[2] and
+                        in_idx[3] < input_shape[3] and in_idx[3] >= 0
+                    ):
+                        res += (
+                            input[index_to_position(in_idx, s1)]
+                            * weight[index_to_position(w_idx, s2)]
+                        )
+        out[i] = res
 
 
 tensor_conv2d = njit(parallel=True, fastmath=True)(_tensor_conv2d)
