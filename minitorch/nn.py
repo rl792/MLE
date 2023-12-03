@@ -178,7 +178,4 @@ def dropout(input: Tensor, rate: float, ignore: bool = False) -> Tensor:
     if ignore:
         return input
     else:
-        ran = rand(input.shape)
-        p = input.zeros() + 1 * rate
-        zipped = FastOps.zip(operators.lt)(p, ran)
-        return zipped * input
+        return input * (rand(input.shape) > rate)
