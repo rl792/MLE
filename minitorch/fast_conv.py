@@ -87,7 +87,7 @@ def _tensor_conv1d(
         in_index = np.empty(in_length, np.int32)
         w_idx = np.empty(w_length, np.int32)
         out_index = np.empty(out_size, np.int32)
-        
+
         to_index(i, out_shape, out_index)
         in_index[0] = out_index[0]
         w_idx[0] = out_index[1]
@@ -236,7 +236,6 @@ def _tensor_conv2d(
 
     # TODO: Implement for Task 4.2.
     for i in prange(out_size):
-
         in_length = len(input_shape)
         w_length = len(weight_shape)
         in_idx = np.empty(in_length, np.int32)
@@ -263,10 +262,12 @@ def _tensor_conv2d(
                     else:
                         in_idx[2] = o_idx[2] + p
                         in_idx[3] = o_idx[3] + k
-                                            
+
                     if (
-                        in_idx[2] >= 0 and in_idx[2] < input_shape[2] and
-                        in_idx[3] < input_shape[3] and in_idx[3] >= 0
+                        in_idx[2] >= 0
+                        and in_idx[2] < input_shape[2]
+                        and in_idx[3] < input_shape[3]
+                        and in_idx[3] >= 0
                     ):
                         res += (
                             input[index_to_position(in_idx, s1)]

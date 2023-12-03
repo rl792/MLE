@@ -86,12 +86,12 @@ class Max(Function):
         int_dim = int(dim.to_numpy())
         ctx.save_for_backward(input, int_dim)
         return max_reduce(input, int_dim)
-    
+
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, float]:
         "Backward of max should be argmax (see above)"
         # TODO: Implement for Task 4.4.
-        
+
         input, dim = ctx.saved_values
         return grad_output * argmax(input, dim), 0.0
 

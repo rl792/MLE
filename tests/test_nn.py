@@ -45,7 +45,7 @@ def test_max(t: Tensor) -> None:
         lambda a: minitorch.nn.max(a, 2), t + minitorch.rand(t.shape) * 1e-4
     )
 
-    
+
 @pytest.mark.task4_4
 @given(tensors(shape=(1, 1, 4, 4)))
 def test_max_pool(t: Tensor) -> None:

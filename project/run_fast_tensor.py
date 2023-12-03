@@ -122,7 +122,7 @@ if __name__ == "__main__":
         data = minitorch.datasets["Split"](PTS)
     elif args.DATASET == "diag":
         data = minitorch.datasets["Diag"](PTS)
-        
+
     HIDDEN = int(args.HIDDEN)
     RATE = args.RATE
 

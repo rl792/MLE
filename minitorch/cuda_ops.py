@@ -461,9 +461,7 @@ def _tensor_matrix_multiply(
             accum += a_shared[pi, k] * b_shared[k, pj]
 
     if i < out_shape[1] and j < out_shape[2]:
-        out[
-            out_strides[0] * batch + out_strides[1] * i + out_strides[2] * j
-        ] = accum
+        out[out_strides[0] * batch + out_strides[1] * i + out_strides[2] * j] = accum
 
 
 tensor_matrix_multiply = cuda.jit(_tensor_matrix_multiply)
