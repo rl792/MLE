@@ -37,7 +37,6 @@ class Conv1d(minitorch.Module):
         # TODO: Implement for Task 4.5.
         return minitorch.conv1d(input, self.weights.value) + self.bias.value
 
-
 class CNNSentimentKim(minitorch.Module):
     """
     Implement a CNN for Sentiment classification based on Y. Kim 2014.
@@ -86,6 +85,7 @@ class CNNSentimentKim(minitorch.Module):
         return x.sigmoid().view(embeddings.shape[0])
 
 
+
 # Evaluation helper methods
 def get_predictions_array(y_true, model_output):
     predictions_array = []
@@ -101,7 +101,7 @@ def get_predictions_array(y_true, model_output):
 
 def get_accuracy(predictions_array):
     correct = 0
-    for y_true, y_pred, logit in predictions_array:
+    for (y_true, y_pred, logit) in predictions_array:
         if y_true == y_pred:
             correct += 1
     return correct / len(predictions_array)
@@ -236,6 +236,7 @@ def encode_sentences(
 
 
 def encode_sentiment_data(dataset, pretrained_embeddings, N_train, N_val=0):
+
     #  Determine max sentence length for padding
     max_sentence_len = 0
     for sentence in dataset["train"]["sentence"] + dataset["validation"]["sentence"]:
@@ -270,7 +271,7 @@ if __name__ == "__main__":
     train_size = 450
     validation_size = 100
     learning_rate = 0.01
-    max_epochs = 250
+    max_epochs = 25
 
     (X_train, y_train), (X_val, y_val) = encode_sentiment_data(
         load_dataset("glue", "sst2"),
