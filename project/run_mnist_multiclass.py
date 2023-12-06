@@ -42,7 +42,11 @@ class Conv2d(minitorch.Module):
 
     def forward(self, input):
         # TODO: Implement for Task 4.5.
-        return self.bias.value + minitorch.conv2d(input, self.weights.value) + self.bias.value
+        return (
+            self.bias.value
+            + minitorch.conv2d(input, self.weights.value)
+            + self.bias.value
+        )
 
 
 class Network(minitorch.Module):
@@ -79,8 +83,9 @@ class Network(minitorch.Module):
         self.mid = self.conv1.forward(x).relu()
         self.out = self.conv2.forward(self.mid).relu()
 
-        lay = self.layer1.forward(minitorch.avgpool2d(self.out, (4, 4))
-                                  .view(BATCH, 392)).relu()
+        lay = self.layer1.forward(
+            minitorch.avgpool2d(self.out, (4, 4)).view(BATCH, 392)
+        ).relu()
 
         if self.training:
             lay = minitorch.dropout(lay, 0.25)
