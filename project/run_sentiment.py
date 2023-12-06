@@ -37,6 +37,7 @@ class Conv1d(minitorch.Module):
         # TODO: Implement for Task 4.5.
         return minitorch.conv1d(input, self.weights.value) + self.bias.value
 
+
 class CNNSentimentKim(minitorch.Module):
     """
     Implement a CNN for Sentiment classification based on Y. Kim 2014.
@@ -64,6 +65,7 @@ class CNNSentimentKim(minitorch.Module):
         self.conv1 = Conv1d(embedding_size, feature_map_size, filter_sizes[0])
         self.conv2 = Conv1d(embedding_size, feature_map_size, filter_sizes[1])
         self.conv3 = Conv1d(embedding_size, feature_map_size, filter_sizes[2])
+
         self.final = Linear(feature_map_size, 1)
         self.dropout = dropout
 
@@ -74,16 +76,16 @@ class CNNSentimentKim(minitorch.Module):
         # TODO: Implement for Task 4.5.
         embeddings = embeddings.permute(0, 2, 1)
 
-        x1 = self.conv1.forward(embeddings).relu()
-        x2 = self.conv2.forward(embeddings).relu()
-        x3 = self.conv3.forward(embeddings).relu()
-        x_mid = (
-            minitorch.nn.max(x1, 2) + minitorch.nn.max(x2, 2) + minitorch.nn.max(x3, 2)
+        c1 = self.conv1.forward(embeddings).relu()
+        c2 = self.conv2.forward(embeddings).relu()
+        c3 = self.conv3.forward(embeddings).relu()
+        
+        c_m = (
+            minitorch.nn.max(c1, 2) + minitorch.nn.max(c2, 2) + minitorch.nn.max(c3, 2)
         )
-        x = self.final(x_mid.view(x_mid.shape[0], x_mid.shape[1]))
+        x = self.final(c_m.view(c_m.shape[0], c_m.shape[1]))
         x = minitorch.nn.dropout(x, self.dropout)
         return x.sigmoid().view(embeddings.shape[0])
-
 
 
 # Evaluation helper methods
